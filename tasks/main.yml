@@ -1,0 +1,26 @@
+---
+- name: Install dhclient package
+  tags: dhclient
+  yum: name=dhclient
+       state=present
+       update_cache=yes
+  register: dhclient_yum
+
+- block:
+    - name: Configure dhclient.conf for multiple devices
+      template:
+        src=dhclient-interface.conf.j2
+        dest=/etc/dhcp/dhclient-{{ item }}.conf
+        owner=root
+        group=root
+        mode=0644
+      notify: restart network
+      with_items: "{{ dhclient_interfaces }}"
+      when: dhclient_interfaces is defined
+    - name: Enable and start network
+      service:
+        name=network
+        enabled=yes
+        state=started
+  tags: dhclient
+  when: dhclient_yum|success
