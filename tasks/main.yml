@@ -30,10 +30,18 @@
       notify: restart {{ dhclient_network_service_name }}
       with_items: "{{ dhclient_interfaces }}"
       when: dhclient_interfaces is defined
+
     - name: Enable and start {{ dhclient_network_service_name }}
       service:
         name={{ dhclient_network_service_name }}
         enabled={{ dhclient_network_service_enabled }}
         state={{ dhclient_network_service_state }}
+      when: ansible_os_family == 'RedHat'
+
+    - name: Enable and start {{ dhclient_network_service_name }}
+      shell: "service {{ dhclient_network_service_name }} restart"
+      # service module and ubuntu network services don't work well together. using shell command instead.
+      when: ansible_os_family == 'Debian'
+
   tags: dhclient
   when: dhclient_yum|success or dhclient_apt|success
