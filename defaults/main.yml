@@ -1,4 +1,7 @@
 ---
+dhclient_pkg_state: 'installed'
+dhclient_network_service_state: 'started'
+dhclient_network_service_enabled: 'yes'
 dhclient_domain_name:
   - "{{ ansible_domain }}"
 dhclient_domain_name_servers: [ '8.8.8.8', '8.8.8.4' ]

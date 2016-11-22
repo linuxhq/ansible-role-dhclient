@@ -1,26 +1,39 @@
 ---
-- name: Install dhclient package
+- name: Add the OS specific variables
+  include_vars: '{{ ansible_os_family }}.yml'
   tags: dhclient
-  yum: name=dhclient
-       state=present
+
+- name: Install dhclient package for RedHat family
+  tags: dhclient
+  yum: name={{ dhclient_package_name }}
+       state="{{ dhclient_pkg_state }}"
        update_cache=yes
+  when: ansible_os_family == 'RedHat'
   register: dhclient_yum
+
+- name: Install dhclient package for Debian family
+  tags: dhclient
+  apt: name={{ dhclient_package_name }}
+       state={{ dhclient_pkg_state }}
+       update_cache=yes
+  when: ansible_os_family == 'Debian'
+  register: dhclient_apt
 
 - block:
     - name: Configure dhclient.conf for multiple devices
       template:
         src=dhclient-interface.conf.j2
-        dest=/etc/dhcp/dhclient-{{ item }}.conf
+        dest={{ dhclient_config_dir }}/dhclient-{{ item }}.conf
         owner=root
         group=root
         mode=0644
-      notify: restart network
+      notify: restart {{ dhclient_network_service_name }}
       with_items: "{{ dhclient_interfaces }}"
       when: dhclient_interfaces is defined
-    - name: Enable and start network
+    - name: Enable and start {{ dhclient_network_service_name }}
       service:
-        name=network
-        enabled=yes
-        state=started
+        name={{ dhclient_network_service_name }}
+        enabled={{ dhclient_network_service_enabled }}
+        state={{ dhclient_network_service_state }}
   tags: dhclient
-  when: dhclient_yum|success
+  when: dhclient_yum|success or dhclient_apt|success
