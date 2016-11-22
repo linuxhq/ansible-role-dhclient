@@ -1,5 +1,5 @@
 ---
-- name: restart network
+- name: restart {{ dhclient_network_service_name }}
   tags: dhclient
-  service: name=network
+  service: name={{ dhclient_network_service_name }}
            state=restarted

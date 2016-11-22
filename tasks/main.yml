@@ -20,7 +20,7 @@
   register: dhclient_apt
 
 - block:
-    - name: Configure dhclient.conf for multiple devices
+    - name: Configure dhclient.conf for multiple devices on RedHat family
       template:
         src=dhclient-interface.conf.j2
         dest={{ dhclient_config_dir }}/dhclient-{{ item }}.conf
@@ -29,7 +29,17 @@
         mode=0644
       notify: restart {{ dhclient_network_service_name }}
       with_items: "{{ dhclient_interfaces }}"
-      when: dhclient_interfaces is defined
+      when: dhclient_interfaces is defined and ansible_os_family == 'RedHat'
+
+    - name: Configure dhclient.conf for multiple devices on Debian family
+      template:
+        src=dhclient.conf.j2
+        dest={{ dhclient_config_dir }}/dhclient.conf
+        owner=root
+        group=root
+        mode=0644
+      notify: restart {{ dhclient_network_service_name }}
+      when: dhclient_interfaces is defined and ansible_os_family == 'Debian'
 
     - name: Enable and start {{ dhclient_network_service_name }}
       service:
