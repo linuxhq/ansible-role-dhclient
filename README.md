@@ -4,7 +4,7 @@
 [![Ansible Galaxy](https://img.shields.io/badge/ansible--galaxy-dhclient-blue.svg?style=flat)](https://galaxy.ansible.com/linuxhq/dhclient)
 [![License](https://img.shields.io/badge/license-GPLv3-brightgreen.svg?style=flat)](COPYING)
 
-RHEL/CentOS - Dynamic Host Configuration Protocol Client
+Linux - Dynamic Host Configuration Protocol Client
 
 ## Requirements
 
