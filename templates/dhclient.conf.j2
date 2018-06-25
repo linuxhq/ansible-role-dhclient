@@ -1,22 +1,27 @@
-{% for item in dhclient_interfaces %}
+# {{ ansible_managed }}
 
-interface "{{ item }}" {
-{% if 'domain-name' not in dhclient_request %}
-{%   if dhclient_domain_name is defined %}
-    supersede domain-name "{{ dhclient_domain_name|join(' ') }}";
+interface "{{ item.interface }}" {
+{% for key, value in item.settings.iteritems()|sort %}
+{%   if value is mapping %}
+{%     for x, y in value.iteritems()|sort %}
+{%       if y is string %}
+    {{ key }} {{ x }} "{{ y|string }}";
+{%       elif y is number %}
+    {{ key }} {{ x }} {{ y|int }}; 
+{%       elif y is iterable %}
+    {{ key }} {{ x }} {{ y|join(', ') }}; 
+{%       else %}
+    {{ key }} {{ x }} {{ y }}; 
+{%       endif %}
+{%     endfor %}
+{%   elif value is iterable %}
+    {{ key }} {{ value|join(', ') }};
+{%   elif value is string %}
+    {{ key }} "{{ value|string }}";
+{%   elif value is number %}
+    {{ key }} {{ value|int }};
+{%   else %}
+    {{ key }} {{ value }};
 {%   endif %}
-{% endif %}
-{% if 'domain-name-servers' not in dhclient_request %}
-{%   if dhclient_domain_name_servers is defined %}
-    supersede domain-name-servers {{ dhclient_domain_name_servers|join(', ') }};
-{%   endif %}
-{% endif %}
-{% if dhclient_request is defined %}
-    request {{ dhclient_request|join(', ') }};
-{% endif %}
-{% if dhclient_require is defined %}
-    require {{ dhclient_require|join(', ') }};
-{% endif %}
-}
-
 {% endfor %}
+}

@@ -1,17 +1,3 @@
 ---
-dhclient_pkg_state: 'installed'
-dhclient_network_service_state: 'started'
-dhclient_network_service_enabled: 'yes'
-dhclient_domain_name:
-  - "{{ ansible_domain }}"
-dhclient_domain_name_servers: [ '8.8.8.8', '8.8.8.4' ]
-dhclient_interfaces: [ 'eth0' ]
-dhclient_request:
-  - broadcast-address
-  - domain-search
-  - host-name
-  - routers
-  - subnet-mask
-  - time-offset
-dhclient_require:
-  - subnet-mask
+dhclient: {}
+...

@@ -1,4 +1,0 @@
----
-dhclient_network_service_name: network-manager
-dhclient_package_name: isc-dhcp-client
-dhclient_config_dir: /etc/dhcp/

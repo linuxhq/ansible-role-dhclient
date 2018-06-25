@@ -1,0 +1,8 @@
+---
+- name: Attempting to set os family specific facts (Debian)
+  tags: dhclient
+  set_fact:
+    dhclient_cfg: /etc/dhcp
+    dhclient_pkg: isc-dhcp-client
+    dhclient_svc: network-manager
+...

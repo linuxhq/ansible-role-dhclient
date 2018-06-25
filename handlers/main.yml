@@ -1,5 +1,8 @@
 ---
-- name: restart {{ dhclient_network_service_name }}
+- name: restart dhcp
   tags: dhclient
-  service: name={{ dhclient_network_service_name }}
-           state=restarted
+  become: true
+  service:
+    name: "{{ dhclient_svc }}"
+    state: restarted
+...
